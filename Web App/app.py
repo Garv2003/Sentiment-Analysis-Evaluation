@@ -1,11 +1,11 @@
 import re
+import pickle
 import tensorflow as tf
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.text import Tokenizer
 
 app = Flask(__name__)
 
@@ -59,7 +59,10 @@ def clean_text(text):
     return text
 
 
-model = load_my_model("Sentimental_Analysis_Evaluation.keras")
+model = load_my_model("./model/Sentimental_Analysis_Evaluation.h5")
+
+with open('./model/SN_tokenizer.pkl', 'rb') as tokenizer_file:
+    tokenizer = pickle.load(tokenizer_file)
 
 max_sequence_length = 100
 
@@ -71,14 +74,12 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-
     if request.form['user_input'] == '':
         return "<p id='prediction' class='flex items-center justify-center w-96 p-4 mt-4 bg-white shadow-md rounded-lg text-red-800 font-bold'>Please enter a valid input</p>"
 
     try:
         user_input = request.form['user_input']
         user_input = clean_text(user_input)
-        tokenizer = Tokenizer()
         user_sequences = tokenizer.texts_to_sequences([user_input])
         user_padded = tf.keras.preprocessing.sequence.pad_sequences(
             user_sequences, maxlen=max_sequence_length)
@@ -94,7 +95,7 @@ def predict():
 
     except Exception as e:
         print(f"Error predicting image: {e}")
-        return "<p id='prediction' class='flex items-center justify-center w-96 p-4 mt-4 bg-white shadow-md rounded-lg text-red-800 font-bold'>Error predicting image please try again</p>"
+        return "<p id='prediction' class='flex items-center justify-center w-96 p-4 mt-4 bg-white shadow-md rounded-lg text-red-800 font-bold'>Error analyzing the input</p>"
 
 
 if __name__ == '__main__':

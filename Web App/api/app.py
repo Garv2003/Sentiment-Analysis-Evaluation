@@ -8,7 +8,6 @@ from nltk.stem import SnowballStemmer
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
 
-# Disable GPU
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
 app = Flask(__name__)
@@ -62,8 +61,8 @@ def clean_text(text):
     text = stem_txt(text)
     return text
 
-
 model = load_my_model("./model/Sentimental_Analysis_Evaluation.h5")
+
 if model is None:
     print("Model failed to load. Exiting.")
     exit(1)

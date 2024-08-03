@@ -94,7 +94,7 @@ def predict():
         return "<p id='prediction' class='flex items-center justify-center w-96 p-4 mt-4 bg-white shadow-md rounded-lg text-gray-800 font-bold'>" + output + "</p>"
 
     except Exception as e:
-        print(f"Error predicting image: {e}")
+        print(f"Error predicting input: {e}")
         return "<p id='prediction' class='flex items-center justify-center w-96 p-4 mt-4 bg-white shadow-md rounded-lg text-red-800 font-bold'>Error analyzing the input</p>"
 
 

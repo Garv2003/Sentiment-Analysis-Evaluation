@@ -1,11 +1,15 @@
 import re
 import pickle
+import os
 import tensorflow as tf
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
+
+# Disable GPU
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
 app = Flask(__name__)
 
@@ -60,6 +64,9 @@ def clean_text(text):
 
 
 model = load_my_model("./model/Sentimental_Analysis_Evaluation.h5")
+if model is None:
+    print("Model failed to load. Exiting.")
+    exit(1)
 
 with open('./model/SN_tokenizer.pkl', 'rb') as tokenizer_file:
     tokenizer = pickle.load(tokenizer_file)
@@ -84,11 +91,7 @@ def predict():
         user_padded = tf.keras.preprocessing.sequence.pad_sequences(
             user_sequences, maxlen=max_sequence_length)
         user_predictions = model.predict(user_padded)
-        output = ""
-        if user_predictions[0] > 0.5:
-            output = "Positive"
-        else:
-            output = "Negative"
+        output = "Positive" if user_predictions[0] > 0.5 else "Negative"
         print(f'Predicted Class: {output}')
         print(user_predictions)
         return "<p id='prediction' class='flex items-center justify-center w-96 p-4 mt-4 bg-white shadow-md rounded-lg text-gray-800 font-bold'>" + output + "</p>"

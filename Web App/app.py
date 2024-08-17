@@ -10,6 +10,8 @@ from tensorflow.keras.models import load_model
 
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
+nltk.download('stopwords')
+
 app = Flask(__name__)
 
 

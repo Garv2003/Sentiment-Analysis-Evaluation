@@ -2,6 +2,7 @@ import re
 import pickle
 import os
 import tensorflow as tf
+import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
@@ -10,6 +11,7 @@ from tensorflow.keras.models import load_model
 
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
+nltk.download('punkt')
 nltk.download('stopwords')
 
 app = Flask(__name__)
@@ -62,6 +64,7 @@ def clean_text(text):
     text = rem_stopwords(text)
     text = stem_txt(text)
     return text
+
 
 model = load_my_model("./model/Sentimental_Analysis_Evaluation.h5")
 
